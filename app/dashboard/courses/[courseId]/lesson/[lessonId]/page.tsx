@@ -91,7 +91,7 @@ export default function LessonPage() {
   if (!lesson) return <div className="p-8">Lesson not found</div>;
 
   const currentIndex = lessons.findIndex(l => l._id === lessonId);
-  const nextLesson = currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null;
+  const nextLesson = currentIndex !== -1 && currentIndex < lessons.length - 1 ? lessons[currentIndex + 1] : null;
   const prevLesson = currentIndex > 0 ? lessons[currentIndex - 1] : null;
 
   return (
@@ -180,7 +180,7 @@ export default function LessonPage() {
           <div className="bg-white p-6 rounded-lg border h-fit">
             <h2 className="text-lg font-semibold mb-4">Course Lessons</h2>
             <div className="space-y-2">
-              {lessons
+              {[...lessons]
                 .sort((a, b) => a.order - b.order)
                 .map((l) => (
                   <button

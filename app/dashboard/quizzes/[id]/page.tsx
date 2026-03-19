@@ -20,12 +20,19 @@ interface Quiz {
   passingScore: number;
 }
 
+interface QuizResult {
+  passed: boolean;
+  score: number;
+  totalPoints: number;
+  percentage: number;
+}
+
 export default function QuizPage() {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<QuizResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [quizStarted, setQuizStarted] = useState(false);
