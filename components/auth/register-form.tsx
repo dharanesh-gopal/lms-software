@@ -151,13 +151,13 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
     fetchingSubjects
 
   return (
-    <Card className="w-full max-w-md shadow-lg border-0">
-      <CardHeader className="text-center pb-4">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-[hsl(var(--primary))]">
-          <GraduationCap className="h-8 w-8 text-[hsl(var(--primary-foreground))]" />
+    <Card className="w-full max-w-md shadow-xl border-0 bg-card">
+      <CardHeader className="text-center pb-6">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
+          <GraduationCap className="h-7 w-7 text-primary" />
         </div>
-        <CardTitle className="text-xl font-semibold">{t("auth.register.title")}</CardTitle>
-        <CardDescription>{t("auth.register.subtitle")}</CardDescription>
+        <CardTitle className="text-2xl font-bold tracking-tight">{t("auth.register.title")}</CardTitle>
+        <CardDescription className="text-muted-foreground mt-1">{t("auth.register.subtitle")}</CardDescription>
         
         {/* Step Indicator */}
         <div className="mt-4 flex justify-between text-xs text-muted-foreground">

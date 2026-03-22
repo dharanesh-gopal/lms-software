@@ -10,129 +10,99 @@ import { BookOpen, Sparkles } from "lucide-react"
 
 type AuthView = "login" | "register" | "forgot"
 
+import Image from "next/image"
+
 export function AuthPage() {
   const [view, setView] = useState<AuthView>("login")
   const { t } = useLanguageStore()
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
+    <div className="flex min-h-screen bg-background">
+      {/* Left Panel - Branding (Distinctive Edge Layout) */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col relative overflow-hidden bg-white">
+        
+        {/* Slanted Top Header Background */}
+        <div 
+          className="absolute top-0 left-0 w-full h-[35%] bg-gradient-to-r from-blue-700 to-cyan-400"
+          style={{ clipPath: "polygon(0 0, 100% 0, 100% 75%, 0 100%)" }}
+        ></div>
 
-      {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between relative z-10 p-12 text-white">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl">
-              <BookOpen className="w-8 h-8" />
-            </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">{t("app.title")}</h1>
-          </div>
-          <p className="mt-2 text-lg text-slate-300">{t("app.subtitle")}</p>
+        {/* Top Header Text */}
+        <div className="relative z-20 pt-16 px-12">
+          <h1 className="text-4xl font-extrabold text-white tracking-wide uppercase mb-3">
+            LMS DISTINCTIVE EDGE
+          </h1>
+          <p className="text-2xl text-white/90 font-light tracking-wide max-w-xl leading-snug">
+            Cultivating Adaptive Problem-Solvers<br />Through Skill-Building
+          </p>
         </div>
 
-        <div className="space-y-8">
-          {/* Standards Section */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-5 h-5 text-cyan-400" />
-              <h2 className="text-xl font-semibold text-slate-200">Available Standards</h2>
-            </div>
-
-            <div className="space-y-3">
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 blur"></div>
-                <div className="relative bg-slate-800 bg-opacity-80 backdrop-blur-xl border border-slate-700 group-hover:border-cyan-500 rounded-2xl p-4 transition duration-300">
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white">10</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-400">10th Standard</p>
-                      <p className="text-xs text-slate-500">6 Subjects / 2 Mediums</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 blur"></div>
-                <div className="relative bg-slate-800 bg-opacity-80 backdrop-blur-xl border border-slate-700 group-hover:border-purple-500 rounded-2xl p-4 transition duration-300">
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white">11</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-400">11th Standard</p>
-                      <p className="text-xs text-slate-500">8 Subjects / 2 Mediums</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="group relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-300 blur"></div>
-                <div className="relative bg-slate-800 bg-opacity-80 backdrop-blur-xl border border-slate-700 group-hover:border-green-500 rounded-2xl p-4 transition duration-300">
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white">12</span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-400">12th Standard</p>
-                      <p className="text-xs text-slate-500">5 Subjects / 2 Mediums</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Main Content Area (Image + Paragraph) */}
+        <div className="relative z-10 flex flex-1 w-full mt-10">
+          
+          {/* Left Side: Circular Background + Student Image */}
+          <div className="relative w-[45%] flex items-end justify-center">
+            {/* The circular background */}
+            <div className="absolute bottom-0 left-4 w-96 h-96 bg-cyan-200 rounded-full blur-sm -z-10 translate-y-12"></div>
+            <div className="relative w-full h-[500px] flex items-end justify-center">
+              <Image 
+                src="/images/auth-hero.png" 
+                alt="Happy Student" 
+                layout="fill"
+                objectFit="contain"
+                objectPosition="bottom center"
+                className="drop-shadow-2xl"
+              />
             </div>
           </div>
 
-          {/* Features Section */}
-          <div className="bg-slate-800 bg-opacity-40 backdrop-blur-xl border border-slate-700 rounded-2xl p-6">
-            <p className="text-sm text-slate-300 leading-relaxed flex items-start gap-3">
-              <Sparkles className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-              <span>Empowering Tamil Nadu students with digital learning. Access video lessons, practice quizzes, and AI-powered insights in both Tamil and English.</span>
+          {/* Right Side: Descriptive Text */}
+          <div className="w-[55%] flex items-center pr-16 pl-6 pt-16 pb-8">
+            <p className="text-slate-800 text-[15px] font-medium leading-relaxed text-justify">
+              One unique aspect of LMS is its incorporation of a specialized "skill-builder" section with its lessons. This innovative feature equips students with the ability to apply the acquired concepts to a wide range of problem types, fostering a deep understanding and adaptability that extends beyond rote learning. This focus on holistic skill development sets LMS apart, enabling students to excel not only in exams but also in real-world problem-solving scenarios.
             </p>
           </div>
+          
         </div>
 
-        <p className="text-xs text-slate-500">
-          Government of Tamil Nadu - Department of Education
-        </p>
+        {/* Bottom Right Slanted Shape */}
+        <div 
+          className="absolute bottom-0 right-0 w-1/2 h-[15%] bg-cyan-500"
+          style={{ clipPath: "polygon(100% 100%, 100% 20%, 50% 100%)" }}
+        ></div>
+        
       </div>
 
       {/* Right Panel - Auth Forms */}
-      <div className="flex flex-1 flex-col items-center justify-center p-6 relative z-10">
-        <div className="absolute top-4 right-4">
+      <div className="flex flex-1 flex-col items-center justify-center p-6 sm:p-12 relative bg-background">
+        <div className="absolute top-6 right-6">
           <LanguageToggle />
         </div>
 
-        <div className="lg:hidden mb-8 text-center text-white">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <div className="p-2 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-lg">
-              <BookOpen className="w-6 h-6" />
+        <div className="lg:hidden mb-10 text-center w-full max-w-sm">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-2.5 bg-blue-600 rounded-xl shadow-sm">
+              <BookOpen className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">{t("app.title")}</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">LMS</h1>
           </div>
-          <p className="text-sm text-slate-400">{t("app.subtitle")}</p>
+          <p className="text-sm text-muted-foreground">Learning Management System</p>
         </div>
 
-        {view === "login" && (
-          <LoginForm
-            onSwitchToRegister={() => setView("register")}
-            onSwitchToForgot={() => setView("forgot")}
-          />
-        )}
-        {view === "register" && (
-          <RegisterForm onSwitchToLogin={() => setView("login")} />
-        )}
-        {view === "forgot" && (
-          <ForgotPasswordForm onSwitchToLogin={() => setView("login")} />
-        )}
+        <div className="w-full max-w-[440px] px-4 sm:px-0">
+          {view === "login" && (
+            <LoginForm
+              onSwitchToRegister={() => setView("register")}
+              onSwitchToForgot={() => setView("forgot")}
+            />
+          )}
+          {view === "register" && (
+            <RegisterForm onSwitchToLogin={() => setView("login")} />
+          )}
+          {view === "forgot" && (
+            <ForgotPasswordForm onSwitchToLogin={() => setView("login")} />
+          )}
+        </div>
       </div>
     </div>
   )
