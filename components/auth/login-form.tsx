@@ -2,12 +2,12 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore, useLanguageStore } from "@/lib/store"
+import { useAuthStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { GraduationCap, Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react"
+import { GraduationCap, Eye, EyeOff, Loader2, Mail, Lock, AlertCircle } from "lucide-react"
 
 interface LoginFormProps {
   onSwitchToRegister: () => void
@@ -16,16 +16,21 @@ interface LoginFormProps {
 
 export function LoginForm({ onSwitchToRegister, onSwitchToForgot }: LoginFormProps) {
   const { login, isLoading } = useAuthStore()
-  const { t } = useLanguageStore()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await login(email, password)
-    router.push("/dashboard")
+    setError("")
+    try {
+      await login(email, password)
+      router.push("/dashboard")
+    } catch (err: any) {
+      setError(err.message || "An error occurred during login")
+    }
   }
 
   return (
@@ -35,18 +40,24 @@ export function LoginForm({ onSwitchToRegister, onSwitchToForgot }: LoginFormPro
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
             <GraduationCap className="h-7 w-7 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight">{t("auth.login.title")}</CardTitle>
+          <CardTitle className="text-2xl font-bold tracking-tight">Sign In</CardTitle>
           <CardDescription className="text-muted-foreground mt-1">
-            {t("auth.login.subtitle")}
+            Access your KalviPlus account
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="flex gap-2 bg-red-50 p-3 rounded-lg border border-red-200">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
             {/* Email Field */}
             <div className="space-y-2">
               <Label htmlFor="email" className="font-semibold text-foreground">
-                {t("auth.login.email")}
+                Email Address
               </Label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-3 h-5 w-5 text-muted-foreground" />
@@ -66,14 +77,14 @@ export function LoginForm({ onSwitchToRegister, onSwitchToForgot }: LoginFormPro
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="font-semibold text-foreground">
-                  {t("auth.login.password")}
+                  Password
                 </Label>
                 <button
                   type="button"
                   onClick={onSwitchToForgot}
                   className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                 >
-                  {t("auth.login.forgotPassword")}
+                  Forgot Password?
                 </button>
               </div>
               <div className="relative">
@@ -126,12 +137,12 @@ export function LoginForm({ onSwitchToRegister, onSwitchToForgot }: LoginFormPro
 
           {/* Register Link */}
           <p className="text-center text-sm text-muted-foreground">
-            {t("auth.login.noAccount")}{" "}
+            Don't have an account?{" "}
             <button
               onClick={onSwitchToRegister}
               className="font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              {t("auth.login.signUp")}
+              Sign Up
             </button>
           </p>
         </CardContent>

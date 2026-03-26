@@ -12,6 +12,14 @@ const UserSchema = new mongoose.Schema({
   subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }], // subjects they teach/study
   subject: { type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }, // kept for backward compatibility
   profileImage: { type: String },
+  xp: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
+  badges: [{
+    name: String,
+    icon: String,
+    description: String,
+    earnedAt: { type: Date, default: Date.now }
+  }],
   createdAt: { type: Date, default: Date.now }
 });
 

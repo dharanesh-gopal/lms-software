@@ -57,26 +57,28 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: false,
 
-  login: async (email: string) => {
+  login: async (email: string, password?: string) => {
     set({ isLoading: true })
-    // Simulate API delay
-    await new Promise((r) => setTimeout(r, 800))
-    const user = DEMO_USERS[email]
-    if (user) {
-      set({ user, isAuthenticated: true, isLoading: false })
-    } else {
-      // Default to student for any email
-      set({
-        user: {
-          id: "u_new",
-          name: email.split("@")[0],
-          email,
-          role: "student",
-          createdAt: new Date().toISOString(),
-        },
-        isAuthenticated: true,
-        isLoading: false,
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       })
+
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || "Invalid email or password")
+      }
+
+      const { token, user } = await res.json()
+      localStorage.setItem("token", token)
+      localStorage.setItem("user", JSON.stringify(user))
+
+      set({ user, isAuthenticated: true, isLoading: false })
+    } catch (err: any) {
+      set({ isLoading: false })
+      throw err
     }
   },
 

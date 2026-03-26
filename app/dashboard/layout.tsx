@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/lib/store"
 import { AppSidebar } from "@/components/app-sidebar"
@@ -8,14 +8,29 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, setUser } = useAuthStore()
   const router = useRouter()
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    setIsMounted(true)
+    const token = localStorage.getItem("token")
+    const userStr = localStorage.getItem("user")
+
+    if (token && userStr && !isAuthenticated) {
+      try {
+        setUser(JSON.parse(userStr))
+      } catch (e) {
+        console.error("Failed to parse user from local storage", e)
+      }
+    } else if (!token && !isAuthenticated) {
       router.replace("/")
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, router, setUser])
+
+  if (!isMounted) {
+    return null
+  }
 
   if (!isAuthenticated) {
     return (

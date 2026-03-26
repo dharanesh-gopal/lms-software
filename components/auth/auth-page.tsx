@@ -4,7 +4,6 @@ import { useState } from "react"
 import { LoginForm } from "./login-form"
 import { RegisterForm } from "./register-form"
 import { ForgotPasswordForm } from "./forgot-password-form"
-import { LanguageToggle } from "../language-toggle"
 import { useLanguageStore } from "@/lib/store"
 import { BookOpen, Sparkles } from "lucide-react"
 
@@ -14,7 +13,6 @@ import Image from "next/image"
 
 export function AuthPage() {
   const [view, setView] = useState<AuthView>("login")
-  const { t } = useLanguageStore()
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -75,9 +73,6 @@ export function AuthPage() {
 
       {/* Right Panel - Auth Forms */}
       <div className="flex flex-1 flex-col items-center justify-center p-6 sm:p-12 relative bg-background">
-        <div className="absolute top-6 right-6">
-          <LanguageToggle />
-        </div>
 
         <div className="lg:hidden mb-10 text-center w-full max-w-sm">
           <div className="flex items-center justify-center gap-3 mb-4">

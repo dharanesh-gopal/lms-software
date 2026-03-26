@@ -22,9 +22,8 @@ import {
   LogOut,
   ChevronDown,
 } from "lucide-react"
-import { useAuthStore, useLanguageStore } from "@/lib/store"
+import { useAuthStore } from "@/lib/store"
 import type { UserRole } from "@/lib/types"
-import { LanguageToggle } from "./language-toggle"
 import {
   Sidebar,
   SidebarContent,
@@ -51,58 +50,58 @@ interface NavSection {
   }[]
 }
 
-function getNavSections(t: (key: string) => string): NavSection[] {
+function getNavSections(): NavSection[] {
   return [
     {
       label: "Main",
       items: [
-        { title: t("nav.dashboard"), href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
+        { title: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
       ],
     },
     {
       label: "Management",
       items: [
-        { title: t("nav.schools"), href: "/dashboard/schools", icon: <School className="h-4 w-4" />, roles: ["super_admin"] },
-        { title: t("nav.students"), href: "/dashboard/students", icon: <Users className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty"] },
-        { title: t("nav.faculty"), href: "/dashboard/faculty", icon: <GraduationCap className="h-4 w-4" />, roles: ["super_admin", "school_admin"] },
+        { title: "Schools", href: "/dashboard/schools", icon: <School className="h-4 w-4" />, roles: ["super_admin"] },
+        { title: "Students", href: "/dashboard/students", icon: <Users className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty"] },
+        { title: "Faculty", href: "/dashboard/faculty", icon: <GraduationCap className="h-4 w-4" />, roles: ["super_admin", "school_admin"] },
       ],
     },
     {
       label: "Academic",
       items: [
-        { title: t("nav.subjects"), href: "/dashboard/subjects", icon: <BookOpen className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
-        { title: t("nav.lessons"), href: "/dashboard/lessons", icon: <FileText className="h-4 w-4" />, roles: ["faculty", "student"] },
-        { title: t("nav.videos"), href: "/dashboard/videos", icon: <Video className="h-4 w-4" />, roles: ["faculty", "student"] },
+        { title: "Subjects", href: "/dashboard/subjects", icon: <BookOpen className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
+        { title: "Lessons", href: "/dashboard/lessons", icon: <FileText className="h-4 w-4" />, roles: ["faculty", "student"] },
+        { title: "Videos", href: "/dashboard/videos", icon: <Video className="h-4 w-4" />, roles: ["faculty", "student"] },
       ],
     },
     {
       label: "Assessment",
       items: [
-        { title: t("nav.quizzes"), href: "/dashboard/quizzes", icon: <ClipboardList className="h-4 w-4" />, roles: ["faculty", "student"] },
-        { title: t("nav.results"), href: "/dashboard/results", icon: <Trophy className="h-4 w-4" />, roles: ["faculty", "student"] },
+        { title: "Quizzes", href: "/dashboard/quizzes", icon: <ClipboardList className="h-4 w-4" />, roles: ["faculty", "student"] },
+        { title: "Results", href: "/dashboard/results", icon: <Trophy className="h-4 w-4" />, roles: ["faculty", "student"] },
       ],
     },
     {
       label: "Content (Faculty)",
       items: [
-        { title: t("faculty.uploadLesson"), href: "/dashboard/upload-lesson", icon: <Upload className="h-4 w-4" />, roles: ["faculty"] },
-        { title: t("faculty.createQuiz"), href: "/dashboard/create-quiz", icon: <ClipboardList className="h-4 w-4" />, roles: ["faculty"] },
-        { title: t("faculty.riskStudents"), href: "/dashboard/risk-students", icon: <AlertTriangle className="h-4 w-4" />, roles: ["faculty"] },
+        { title: "Upload Lesson", href: "/dashboard/upload-lesson", icon: <Upload className="h-4 w-4" />, roles: ["faculty"] },
+        { title: "Create Quiz", href: "/dashboard/create-quiz", icon: <ClipboardList className="h-4 w-4" />, roles: ["faculty"] },
+        { title: "At-Risk Students", href: "/dashboard/risk-students", icon: <AlertTriangle className="h-4 w-4" />, roles: ["faculty"] },
       ],
     },
     {
       label: "Insights",
       items: [
-        { title: t("nav.analytics"), href: "/dashboard/analytics", icon: <BarChart3 className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
-        { title: t("nav.ai"), href: "/dashboard/ai-insights", icon: <Brain className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
-        { title: t("nav.recommendations"), href: "/dashboard/recommendations", icon: <Target className="h-4 w-4" />, roles: ["student"] },
-        { title: t("nav.attendance"), href: "/dashboard/attendance", icon: <Calendar className="h-4 w-4" />, roles: ["school_admin", "faculty"] },
+        { title: "Analytics", href: "/dashboard/analytics", icon: <BarChart3 className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
+        { title: "AI Insights", href: "/dashboard/ai-insights", icon: <Brain className="h-4 w-4" />, roles: ["super_admin", "school_admin", "faculty", "student"] },
+        { title: "Recommendations", href: "/dashboard/recommendations", icon: <Target className="h-4 w-4" />, roles: ["student"] },
+        { title: "Attendance", href: "/dashboard/attendance", icon: <Calendar className="h-4 w-4" />, roles: ["school_admin", "faculty"] },
       ],
     },
     {
       label: "System",
       items: [
-        { title: t("nav.documentation"), href: "/dashboard/documentation", icon: <FileCode className="h-4 w-4" />, roles: ["super_admin"] },
+        { title: "Documentation", href: "/dashboard/documentation", icon: <FileCode className="h-4 w-4" />, roles: ["super_admin"] },
       ],
     },
   ]
@@ -112,8 +111,7 @@ export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { user, logout } = useAuthStore()
-  const { t } = useLanguageStore()
-  const navSections = getNavSections(t)
+  const navSections = getNavSections()
 
   const handleLogout = () => {
     logout()
@@ -175,9 +173,6 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarSeparator />
       <SidebarFooter className="p-3">
-        <div className="flex items-center justify-between mb-2">
-          <LanguageToggle />
-        </div>
         <div className="flex items-center gap-2 rounded-lg p-2">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] text-xs">
@@ -186,9 +181,9 @@ export function AppSidebar() {
           </Avatar>
           <div className="flex flex-1 flex-col overflow-hidden">
             <span className="truncate text-xs font-medium text-sidebar-foreground">{user.name}</span>
-            <span className="truncate text-[10px] text-sidebar-foreground/60">{t(`role.${user.role}`)}</span>
+            <span className="truncate text-[10px] text-sidebar-foreground/60 capitalize">{user.role.replace("_", " ")}</span>
           </div>
-          <button onClick={handleLogout} className="rounded-md p-1.5 hover:bg-sidebar-accent" title={t("common.logout")}>
+          <button onClick={handleLogout} className="rounded-md p-1.5 hover:bg-sidebar-accent" title="Logout">
             <LogOut className="h-3.5 w-3.5 text-sidebar-foreground/60" />
           </button>
         </div>

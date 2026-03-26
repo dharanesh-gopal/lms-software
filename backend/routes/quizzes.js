@@ -24,6 +24,18 @@ router.post('/', authMiddleware, roleMiddleware('faculty', 'admin'), async (req,
   }
 });
 
+// GET /api/quizzes/my/attempts - student views their attempts
+router.get('/my/attempts', authMiddleware, async (req, res) => {
+  try {
+    const attempts = await QuizAttempt.find({ student: req.user.id })
+      .populate('quiz', 'title totalPoints passingScore')
+      .sort('-completedAt');
+    res.json(attempts);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // GET /api/quizzes/:id - student view (hides answers)
 router.get('/:id', async (req, res) => {
   try {
@@ -88,6 +100,31 @@ router.post('/:id/submit', authMiddleware, async (req, res) => {
     });
 
     await attempt.save();
+
+    // Gamification XP for quiz
+    let xpGained = passed ? 100 : 20; // 100 XP for passing, 20 XP for just taking it
+    const User = require('../models/User'); // ensure User model is loaded
+    const user = await User.findById(req.user.id);
+    if (user) {
+      if (percentage === 100) {
+        xpGained += 50; // extra 50 for perfect score
+        
+        // check if has perfect score badge for this quiz
+        const hasPerfectBadge = user.badges.some(b => b.name === 'Perfect Score');
+        if (!hasPerfectBadge) {
+          user.badges.push({ name: 'Perfect Score', icon: 'star', description: 'Got 100% on a quiz!' });
+        }
+      }
+
+      user.xp = (user.xp || 0) + xpGained;
+      const newLevel = Math.floor(user.xp / 100) + 1;
+      if (newLevel > (user.level || 1)) {
+        user.level = newLevel;
+        user.badges.push({ name: `Level ${newLevel} Scholar`, icon: 'award', description: `Reached Level ${newLevel}` });
+      }
+      await user.save();
+    }
+
     res.status(201).json(attempt);
   } catch (err) {
     res.status(400).json({ error: err.message });

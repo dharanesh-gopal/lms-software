@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuthStore, useLanguageStore } from "@/lib/store"
+import { useAuthStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,7 +17,6 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
-  const { t } = useLanguageStore()
   const router = useRouter()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -156,8 +155,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
           <GraduationCap className="h-7 w-7 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold tracking-tight">{t("auth.register.title")}</CardTitle>
-        <CardDescription className="text-muted-foreground mt-1">{t("auth.register.subtitle")}</CardDescription>
+        <CardTitle className="text-2xl font-bold tracking-tight">Create Account</CardTitle>
+        <CardDescription className="text-muted-foreground mt-1">Join KalviPlus</CardDescription>
         
         {/* Step Indicator */}
         <div className="mt-4 flex justify-between text-xs text-muted-foreground">
@@ -185,7 +184,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           )}
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">{t("auth.register.name")}</Label>
+            <Label htmlFor="name">Full Name</Label>
             <Input
               id="name"
               value={name}
@@ -196,7 +195,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="reg-email">{t("auth.login.email")}</Label>
+            <Label htmlFor="reg-email">Email Address</Label>
             <Input
               id="reg-email"
               type="email"
@@ -208,7 +207,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="reg-password">{t("auth.login.password")}</Label>
+            <Label htmlFor="reg-password">Password</Label>
             <Input
               id="reg-password"
               type="password"
@@ -220,7 +219,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label>{t("auth.register.role")}</Label>
+            <Label>Select Role</Label>
             <Select value={role} onValueChange={(v) => {
               setRole(v as UserRole)
               setStandard("")
@@ -232,9 +231,9 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="student">{t("role.student")}</SelectItem>
-                <SelectItem value="faculty">{t("role.faculty")}</SelectItem>
-                <SelectItem value="school_admin">{t("role.school_admin")}</SelectItem>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="faculty">Faculty</SelectItem>
+                <SelectItem value="school_admin">School Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -321,17 +320,17 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
 
           <Button type="submit" disabled={isSubmitDisabled} className="w-full">
             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-            {loading ? "Registering..." : t("common.register")}
+            {loading ? "Registering..." : "Register"}
           </Button>
         </form>
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
-          {t("auth.register.haveAccount")}{" "}
+          Already have an account?{" "}
           <button
             onClick={onSwitchToLogin}
             className="font-medium text-[hsl(var(--primary))] hover:underline"
           >
-            {t("auth.register.signIn")}
+            Sign In
           </button>
         </p>
       </CardContent>

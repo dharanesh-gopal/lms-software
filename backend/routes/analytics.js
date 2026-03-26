@@ -26,7 +26,16 @@ router.get('/dashboard/student', authMiddleware, async (req, res) => {
       ? (quizAttempts.reduce((sum, q) => sum + q.percentage, 0) / quizAttempts.length).toFixed(2)
       : 0;
 
+    // Gamification User Stats
+    const user = await User.findById(userId).select('xp level badges');
+
     res.json({
+      gamification: {
+        xp: user.xp || 0,
+        level: user.level || 1,
+        badges: user.badges || [],
+        nextLevelXp: (user.level || 1) * 100
+      },
       coursesEnrolled: enrolledCourses.length,
       totalLessonsWatched: analytics.reduce((sum, a) => sum + a.videosWatched, 0),
       averageQuizScore: parseFloat(avgScore),
@@ -116,13 +125,45 @@ router.post('/track', authMiddleware, async (req, res) => {
       analytics = new Analytics({ user: req.user.id, course });
     }
 
-    if (action === 'video-watched') analytics.videosWatched++;
-    if (action === 'lesson-completed') analytics.lessonsCompleted++;
-    if (action === 'quiz-taken') analytics.quizzesTaken++;
+    let xpGained = 0;
+    if (action === 'video-watched') {
+      analytics.videosWatched++;
+      xpGained = 10;
+    }
+    if (action === 'lesson-completed') {
+      analytics.lessonsCompleted++;
+      xpGained = 50;
+    }
+    if (action === 'quiz-taken') {
+      analytics.quizzesTaken++;
+      xpGained = 20;
+    }
     if (duration) analytics.timeSpent += duration;
 
     analytics.lastAccessed = new Date();
     await analytics.save();
+
+    // Award Gamification XP
+    if (xpGained > 0) {
+      const user = await User.findById(req.user.id);
+      if (user) {
+        user.xp = (user.xp || 0) + xpGained;
+        
+        // Simple leveling: 100 XP per level
+        const newLevel = Math.floor(user.xp / 100) + 1;
+        if (newLevel > (user.level || 1)) {
+          user.level = newLevel;
+          
+          // Let's grant a level-up badge
+          user.badges.push({
+            name: `Level ${newLevel} Scholar`,
+            icon: 'award',
+            description: `Reached Level ${newLevel}`
+          });
+        }
+        await user.save();
+      }
+    }
 
     res.json(analytics);
   } catch (err) {

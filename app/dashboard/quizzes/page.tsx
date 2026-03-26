@@ -24,9 +24,26 @@ export default function QuizzesPage() {
   const assessment = mockAssessments.find((a) => a.id === activeAssessment)
   const questions = mockQuestions.filter((q) => q.assessmentId === activeAssessment)
 
-  const finishQuiz = useCallback(() => {
+  const finishQuiz = useCallback(async () => {
     setQuizState("result")
-  }, [])
+    
+    // Grant gamification XP for completing the quiz
+    try {
+      const token = localStorage.getItem('token');
+      if (token && activeAssessment) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/track`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            action: 'quiz-taken',
+            course: activeAssessment
+          })
+        });
+      }
+    } catch (err) {
+      console.error('Failed to grant XP:', err);
+    }
+  }, [activeAssessment])
 
   useEffect(() => {
     if (quizState !== "taking" || timeLeft <= 0) return
@@ -132,7 +149,8 @@ export default function QuizzesPage() {
               <button
                 key={idx}
                 onClick={() => setCurrentQuestionIdx(idx)}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
+                disabled={(answers[currentQ.id] === undefined) && idx > currentQuestionIdx}
+                className={`h-2.5 w-2.5 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
                   idx === currentQuestionIdx
                     ? "bg-[hsl(var(--primary))]"
                     : answers[questions[idx]?.id ?? ""] !== undefined
@@ -143,9 +161,9 @@ export default function QuizzesPage() {
             ))}
           </div>
           {currentQuestionIdx === questions.length - 1 ? (
-            <Button onClick={finishQuiz}>{t("assessment.submit")}</Button>
+            <Button onClick={finishQuiz} disabled={answers[currentQ.id] === undefined}>{t("assessment.submit")}</Button>
           ) : (
-            <Button onClick={() => setCurrentQuestionIdx((p) => p + 1)}>Next</Button>
+            <Button onClick={() => setCurrentQuestionIdx((p) => p + 1)} disabled={answers[currentQ.id] === undefined}>Next</Button>
           )}
         </div>
       </div>

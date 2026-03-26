@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useLanguageStore } from "@/lib/store"
 import { StatCard } from "./stat-card"
@@ -7,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { BookOpen, Trophy, Brain, Target, Play, ArrowRight } from "lucide-react"
+import { BookOpen, Trophy, Brain, Target, Play, ArrowRight, Star, Award } from "lucide-react"
 import {
   mockPerformanceAnalytics,
   mockRecommendations,
@@ -32,6 +33,25 @@ import {
 
 export function StudentDashboard() {
   const { t, locale } = useLanguageStore()
+  const [gamification, setGamification] = useState<any>(null)
+
+  useEffect(() => {
+    async function fetchGamification() {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/dashboard/student`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setGamification(data.gamification)
+        }
+      } catch (err) {
+        console.error('Failed to fetch gamification:', err)
+      }
+    }
+    fetchGamification()
+  }, [])
 
   const enrolledSubjects = mockSubjects.filter((s) => s.standard === "10" && s.medium === "english")
 
@@ -48,6 +68,68 @@ export function StudentDashboard() {
         <StatCard title={t("ai.predictedScore")} value={`${mockAIPrediction.predictedScore}%`} change={3} icon={Brain} iconColor="bg-[hsl(var(--warning))]/10 text-[hsl(var(--warning))]" />
         <StatCard title="Overall Progress" value="65%" change={8} icon={Target} iconColor="bg-[hsl(var(--success))]/10 text-[hsl(var(--success))]" />
       </div>
+
+      {/* Gamification Profile */}
+      {gamification && (
+        <div className="bg-white rounded-3xl p-8 border border-gray-100 mt-2 mb-4 flex flex-col md:flex-row gap-8 items-center shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-full -mr-32 -mt-32 opacity-50 pointer-events-none"></div>
+          
+          <div className="relative shrink-0">
+            <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-rose-500 p-1.5 shadow-lg shadow-orange-500/30">
+              <div className="w-full h-full bg-white rounded-full flex items-center justify-center flex-col">
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Level</span>
+                <span className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-rose-600 leading-none">{gamification.level}</span>
+              </div>
+            </div>
+            <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-amber-400 to-orange-500 text-white rounded-full p-2 border-4 border-white shadow-md">
+              <Star className="w-5 h-5 fill-current" />
+            </div>
+          </div>
+          
+          <div className="flex-1 w-full relative z-10">
+            <div className="flex justify-between items-end mb-3">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-1">Scholar Journey</h2>
+                <p className="text-sm text-gray-500">Keep learning to level up and earn badges!</p>
+              </div>
+              <div className="text-right">
+                <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">{gamification.xp}</span>
+                <span className="text-sm font-semibold text-gray-400"> / {gamification.nextLevelXp} XP</span>
+              </div>
+            </div>
+            
+            <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-6 shadow-inner">
+              <div 
+                className="h-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 rounded-full transition-all duration-1000 relative" 
+                style={{ width: `${Math.min(100, (gamification.xp / gamification.nextLevelXp) * 100)}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 -skew-x-12 translate-x-full animate-[shimmer_2s_infinite]"></div>
+              </div>
+            </div>
+            
+            {gamification.badges && gamification.badges.length > 0 && (
+              <div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Earned Badges</p>
+                <div className="flex gap-3 flex-wrap">
+                  {gamification.badges.map((badge: any, idx: number) => (
+                    <div key={idx} className="group relative flex items-center gap-2 bg-white border border-orange-100 hover:border-orange-300 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all cursor-default overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-50 to-amber-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <Award className="w-5 h-5 text-orange-500 relative z-10" />
+                      <div className="relative z-10">
+                        <span className="block text-sm font-bold text-gray-800">{badge.name}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {(!gamification.badges || gamification.badges.length === 0) && (
+              <p className="text-sm text-gray-400 italic">No badges earned yet. Complete a quiz to earn your first badge!</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* AI Prediction Card */}
       <Card className="border-0 shadow-sm bg-[hsl(var(--sidebar-background))] text-[hsl(var(--sidebar-foreground))]">
