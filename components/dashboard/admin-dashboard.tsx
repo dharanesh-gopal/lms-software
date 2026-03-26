@@ -20,7 +20,7 @@ import {
 } from "recharts"
 
 export function AdminDashboard() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
 
   return (
     <div className="flex flex-col gap-6">
@@ -115,7 +115,7 @@ export function AdminDashboard() {
               <tbody>
                 {mockSchools.map((school) => (
                   <tr key={school.id} className="border-b last:border-0 hover:bg-muted/50 transition-colors">
-                    <td className="py-3 px-2 font-medium">{locale === "ta" ? school.name_ta : school.name_en}</td>
+                    <td className="py-3 px-2 font-medium">{school.name_en}</td>
                     <td className="py-3 px-2 text-muted-foreground">{school.district}</td>
                     <td className="py-3 px-2">{school.studentCount.toLocaleString()}</td>
                     <td className="py-3 px-2">{school.facultyCount}</td>

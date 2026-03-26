@@ -29,7 +29,7 @@ const tooltipStyle = {
 }
 
 export default function AIInsightsPage() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
   const { user } = useAuthStore()
 
   const radarData = subjectPerformanceData.map((d) => ({
@@ -156,9 +156,9 @@ export default function AIInsightsPage() {
                       <Target className="h-3 w-3" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">{locale === "ta" ? rec.title_ta : rec.title_en}</p>
+                      <p className="text-sm font-medium">{rec.title_en}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        {locale === "ta" ? rec.description_ta : rec.description_en}
+                        {rec.description_en}
                       </p>
                     </div>
                     <Badge variant="outline" className="text-xs capitalize shrink-0">{rec.priority}</Badge>

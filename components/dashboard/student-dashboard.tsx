@@ -32,7 +32,7 @@ import {
 } from "recharts"
 
 export function StudentDashboard() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
   const [gamification, setGamification] = useState<any>(null)
 
   useEffect(() => {
@@ -235,7 +235,7 @@ export function StudentDashboard() {
                     className="group flex flex-col gap-2 rounded-xl border p-3 transition-all hover:shadow-md hover:border-[hsl(var(--primary))]/30"
                   >
                     <p className="text-sm font-medium group-hover:text-[hsl(var(--primary))]">
-                      {locale === "ta" ? subject.name_ta : subject.name_en}
+                      {subject.name_en}
                     </p>
                     {perf && (
                       <>
@@ -265,9 +265,9 @@ export function StudentDashboard() {
                     <Target className="h-3 w-3" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium">{locale === "ta" ? rec.title_ta : rec.title_en}</p>
+                    <p className="text-sm font-medium">{rec.title_en}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {locale === "ta" ? rec.description_ta : rec.description_en}
+                      {rec.description_en}
                     </p>
                   </div>
                   <Badge variant="outline" className="text-xs capitalize shrink-0">{rec.type}</Badge>

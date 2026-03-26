@@ -18,7 +18,6 @@ export interface User {
 export interface School {
   id: string
   name_en: string
-  name_ta: string
   district: string
   code: string
   principalName: string
@@ -34,7 +33,6 @@ export type Medium = "english" | "tamil"
 export interface Subject {
   id: string
   name_en: string
-  name_ta: string
   standard: Standard
   medium: Medium
   code: string
@@ -45,24 +43,20 @@ export interface Unit {
   id: string
   subjectId: string
   name_en: string
-  name_ta: string
   unitNumber: number
   description_en?: string
-  description_ta?: string
-}
+  }
 
 export interface Lesson {
   id: string
   unitId: string
   title_en: string
-  title_ta: string
   lessonNumber: number
   videoUrl?: string
   notesUrl?: string
   duration?: number
   description_en?: string
-  description_ta?: string
-}
+  }
 
 // ===== Assessment =====
 export interface Assessment {
@@ -70,7 +64,6 @@ export interface Assessment {
   subjectId: string
   unitId?: string
   title_en: string
-  title_ta: string
   type: "quiz" | "exam" | "assignment"
   totalMarks: number
   duration: number // in minutes
@@ -83,14 +76,12 @@ export interface Question {
   id: string
   assessmentId: string
   question_en: string
-  question_ta: string
   options_en: string[]
-  options_ta: string[]
+  []
   correctAnswer: number
   marks: number
   explanation_en?: string
-  explanation_ta?: string
-}
+  }
 
 export interface Result {
   id: string
@@ -122,9 +113,7 @@ export interface Recommendation {
   studentId: string
   type: "lesson" | "practice" | "review"
   title_en: string
-  title_ta: string
   description_en: string
-  description_ta: string
   priority: "high" | "medium" | "low"
   lessonId?: string
 }

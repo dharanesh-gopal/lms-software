@@ -12,7 +12,7 @@ import type { Standard, Medium } from "@/lib/types"
 import Link from "next/link"
 
 export default function SubjectsPage() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
   const [standard, setStandard] = useState<Standard>("10")
   const [medium, setMedium] = useState<Medium>("english")
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null)
@@ -68,9 +68,7 @@ export default function SubjectsPage() {
           <>
             <ChevronRight className="h-3 w-3" />
             <button onClick={() => setSelectedUnitId(null)} className="hover:text-foreground">
-              {locale === "ta"
-                ? filteredSubjects.find((s) => s.id === selectedSubjectId)?.name_ta
-                : filteredSubjects.find((s) => s.id === selectedSubjectId)?.name_en}
+              {filteredSubjects.find((s) => s.id === selectedSubjectId)?.name_en}
             </button>
           </>
         )}
@@ -78,9 +76,7 @@ export default function SubjectsPage() {
           <>
             <ChevronRight className="h-3 w-3" />
             <span className="text-foreground">
-              {locale === "ta"
-                ? units.find((u) => u.id === selectedUnitId)?.name_ta
-                : units.find((u) => u.id === selectedUnitId)?.name_en}
+              {units.find((u) => u.id === selectedUnitId)?.name_en}
             </span>
           </>
         )}
@@ -102,11 +98,8 @@ export default function SubjectsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold text-card-foreground">
-                      {locale === "ta" ? subject.name_ta : subject.name_en}
+                      {subject.name_en}
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {locale === "ta" ? subject.name_en : subject.name_ta}
-                    </p>
                     <Badge variant="outline" className="text-[10px] mt-2 font-mono">{subject.code}</Badge>
                   </div>
                   <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
@@ -139,8 +132,7 @@ export default function SubjectsPage() {
                         {unit.unitNumber}
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold">{locale === "ta" ? unit.name_ta : unit.name_en}</h3>
-                        <p className="text-xs text-muted-foreground">{locale === "ta" ? unit.name_en : unit.name_ta}</p>
+                        <h3 className="text-sm font-semibold">{unit.name_en}</h3>
                       </div>
                     </div>
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -170,10 +162,10 @@ export default function SubjectsPage() {
                         {lesson.lessonNumber}
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold">{locale === "ta" ? lesson.title_ta : lesson.title_en}</h3>
+                        <h3 className="text-sm font-semibold">{lesson.title_en}</h3>
                         {lesson.description_en && (
                           <p className="text-xs text-muted-foreground mt-0.5">
-                            {locale === "ta" ? lesson.description_ta : lesson.description_en}
+                            {lesson.description_en}
                           </p>
                         )}
                         {lesson.duration && (

@@ -1,9 +1,30 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, BookOpen } from "lucide-react"
 
 export default function LessonsPage() {
+  const [completedLessons, setCompletedLessons] = useState<number[]>([])
+
+  const completeLesson = async (id: number) => {
+    if (completedLessons.includes(id)) return;
+    setCompletedLessons(prev => [...prev, id]);
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/track`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ action: 'lesson-completed', course: `mock-lesson-${id}` })
+        });
+      }
+    } catch (err) {
+      console.error('Failed to grant XP:', err);
+    }
+  }
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -23,9 +44,18 @@ export default function LessonsPage() {
               <p className="text-xs text-muted-foreground mt-1">
                 4 Topics • 45 Minutes
               </p>
-              <div className="mt-4 flex items-center text-sm text-primary font-medium">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Start Lesson →
+              <div className="mt-4 flex items-center justify-between text-sm text-[hsl(var(--primary))] font-medium">
+                {completedLessons.includes(i) ? (
+                  <span className="text-orange-500 font-bold flex items-center gap-1 text-xs">+50 XP Awarded!</span>
+                ) : (
+                  <button onClick={() => completeLesson(i)} className="flex items-center hover:underline">
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Complete Lesson →
+                  </button>
+                )}
+                {!completedLessons.includes(i) && (
+                  <span className="text-orange-500 text-xs font-bold flex items-center gap-1">+50 XP</span>
+                )}
               </div>
             </CardContent>
           </Card>

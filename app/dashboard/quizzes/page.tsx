@@ -14,15 +14,16 @@ import { mockAssessments, mockQuestions } from "@/lib/mock-data"
 type QuizState = "list" | "taking" | "result"
 
 export default function QuizzesPage() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
   const [quizState, setQuizState] = useState<QuizState>("list")
   const [activeAssessment, setActiveAssessment] = useState<string | null>(null)
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [timeLeft, setTimeLeft] = useState(0)
+  const [shuffledQuestions, setShuffledQuestions] = useState<typeof mockQuestions>([])
 
   const assessment = mockAssessments.find((a) => a.id === activeAssessment)
-  const questions = mockQuestions.filter((q) => q.assessmentId === activeAssessment)
+  const questions = shuffledQuestions
 
   const finishQuiz = useCallback(async () => {
     setQuizState("result")
@@ -62,6 +63,15 @@ export default function QuizzesPage() {
   const startQuiz = (id: string) => {
     const a = mockAssessments.find((a) => a.id === id)
     if (!a) return
+
+    // Shuffle questions using Fisher-Yates algorithm
+    const raw = mockQuestions.filter((q) => q.assessmentId === id)
+    const shuffled = [...raw]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setShuffledQuestions(shuffled)
     setActiveAssessment(id)
     setCurrentQuestionIdx(0)
     setAnswers({})
@@ -100,7 +110,7 @@ export default function QuizzesPage() {
         {/* Timer Bar */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold">{locale === "ta" ? assessment.title_ta : assessment.title_en}</h2>
+            <h2 className="text-lg font-bold">{assessment.title_en}</h2>
             <p className="text-xs text-muted-foreground">
               Question {currentQuestionIdx + 1} of {questions.length}
             </p>
@@ -117,14 +127,14 @@ export default function QuizzesPage() {
         <Card className="border-0 shadow-sm">
           <CardContent className="p-6">
             <p className="text-base font-medium mb-6">
-              {locale === "ta" ? currentQ.question_ta : currentQ.question_en}
+              {currentQ.question_en}
             </p>
             <RadioGroup
               value={answers[currentQ.id]?.toString()}
               onValueChange={(v) => selectAnswer(currentQ.id, parseInt(v))}
             >
               <div className="flex flex-col gap-3">
-                {(locale === "ta" ? currentQ.options_ta : currentQ.options_en).map((opt, idx) => (
+                {(currentQ.options_en).map((opt, idx) => (
                   <div key={idx} className="flex items-center gap-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => selectAnswer(currentQ.id, idx)}>
                     <RadioGroupItem value={idx.toString()} id={`opt-${idx}`} />
                     <Label htmlFor={`opt-${idx}`} className="cursor-pointer flex-1 text-sm">{opt}</Label>
@@ -188,7 +198,7 @@ export default function QuizzesPage() {
               {passed ? <Trophy className="h-8 w-8 text-[hsl(var(--success))]" /> : <XCircle className="h-8 w-8 text-destructive" />}
             </div>
             <h2 className="text-xl font-bold mb-1">{passed ? t("assessment.passed") : t("assessment.failed")}</h2>
-            <p className="text-sm text-muted-foreground mb-6">{locale === "ta" ? assessment.title_ta : assessment.title_en}</p>
+            <p className="text-sm text-muted-foreground mb-6">{assessment.title_en}</p>
             <div className="text-4xl font-bold text-[hsl(var(--primary))] mb-2">{percentage}%</div>
             <p className="text-sm text-muted-foreground">{correct} / {total} marks</p>
           </CardContent>
@@ -208,13 +218,13 @@ export default function QuizzesPage() {
                     <div className="flex items-start gap-2">
                       {isCorrect ? <CheckCircle className="h-4 w-4 text-[hsl(var(--success))] shrink-0 mt-0.5" /> : <XCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />}
                       <div>
-                        <p className="text-sm font-medium">{idx + 1}. {locale === "ta" ? q.question_ta : q.question_en}</p>
+                        <p className="text-sm font-medium">{idx + 1}. {q.question_en}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Correct: {(locale === "ta" ? q.options_ta : q.options_en)[q.correctAnswer]}
+                          Correct: {(q.options_en)[q.correctAnswer]}
                         </p>
                         {q.explanation_en && (
                           <p className="text-xs text-muted-foreground mt-1 italic">
-                            {locale === "ta" ? q.explanation_ta : q.explanation_en}
+                            {q.explanation_en}
                           </p>
                         )}
                       </div>
@@ -249,11 +259,12 @@ export default function QuizzesPage() {
                   </div>
                   <Badge variant="outline" className="text-xs capitalize">{a.type}</Badge>
                 </div>
-                <h3 className="text-sm font-semibold mb-1">{locale === "ta" ? a.title_ta : a.title_en}</h3>
+                <h3 className="text-sm font-semibold mb-1">{a.title_en}</h3>
                 <div className="flex flex-wrap gap-2 mt-3 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{a.duration} min</span>
                   <span>{a.totalMarks} marks</span>
                   <span>{qCount > 0 ? qCount : a.questionCount} questions</span>
+                  <span className="text-orange-500 font-bold ml-auto flex items-center gap-1">+20 XP</span>
                 </div>
                 <Button
                   size="sm"

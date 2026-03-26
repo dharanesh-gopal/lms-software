@@ -109,8 +109,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 // ===== Language Store =====
 interface LanguageState {
-  locale: "en" | "ta"
-  setLocale: (locale: "en" | "ta") => void
+  locale: "en"
+  setLocale: (locale: "en") => void
   t: (key: string) => string
 }
 
@@ -260,160 +260,6 @@ const translations: Record<string, Record<string, string>> = {
     "analytics.schoolComparison": "School Comparison",
     "analytics.districtPerformance": "District Performance",
 
-    // Language
-    "language.english": "English",
-    "language.tamil": "Tamil",
-    "language.toggle": "Switch Language",
-  },
-  ta: {
-    // Common
-    "app.title": "TN EduLearn LMS",
-    "app.subtitle": "தமிழ்நாடு கற்றல் மேலாண்மை அமைப்பு",
-    "common.dashboard": "டாஷ்போர்ட்",
-    "common.home": "முகப்பு",
-    "common.settings": "அமைப்புகள்",
-    "common.profile": "சுயவிவரம்",
-    "common.logout": "வெளியேறு",
-    "common.login": "உள்நுழைய",
-    "common.register": "பதிவு செய்ய",
-    "common.submit": "சமர்ப்பி",
-    "common.cancel": "ரத்து செய்",
-    "common.save": "சேமி",
-    "common.delete": "நீக்கு",
-    "common.edit": "திருத்து",
-    "common.view": "பார்",
-    "common.search": "தேடு",
-    "common.filter": "வடிகட்டி",
-    "common.loading": "ஏற்றுகிறது...",
-    "common.noData": "தரவு இல்லை",
-    "common.actions": "செயல்கள்",
-    "common.status": "நிலை",
-    "common.all": "அனைத்தும்",
-    "common.back": "பின்னால்",
-
-    // Auth
-    "auth.login.title": "உள்நுழைய",
-    "auth.login.subtitle": "உங்கள் KalviPlus கணக்கை அணுகவும்",
-    "auth.login.email": "மின்னஞ்சல் முகவரி",
-    "auth.login.password": "கடவுச்சொல்",
-    "auth.login.forgotPassword": "கடவுச்சொல் மறந்துவிட்டதா?",
-    "auth.login.noAccount": "கணக்கு இல்லையா?",
-    "auth.login.signUp": "பதிவு செய்யவும்",
-    "auth.register.title": "கணக்கை உருவாக்கு",
-    "auth.register.subtitle": "KalviPlus இல் சேரவும்",
-    "auth.register.name": "முழு பெயர்",
-    "auth.register.role": "பாத்திரத்தைத் தேர்ந்தெடுக்கவும்",
-    "auth.register.haveAccount": "ஏற்கனவே கணக்கு உள்ளதா?",
-    "auth.register.signIn": "உள்நுழையவும்",
-    "auth.forgotPassword.title": "கடவுச்சொல்லை மீட்டமை",
-    "auth.forgotPassword.subtitle": "மீட்டமை இணைப்பைப் பெற உங்கள் மின்னஞ்சலை உள்ளிடவும்",
-    "auth.forgotPassword.send": "மீட்டமை இணைப்பை அனுப்பு",
-    "auth.forgotPassword.backToLogin": "உள்நுழைவுக்குத் திரும்பு",
-
-    // Roles
-    "role.super_admin": "முதன்மை நிர்வாகி",
-    "role.school_admin": "பள்ளி நிர்வாகி",
-    "role.faculty": "ஆசிரியர்",
-    "role.student": "மாணவர்",
-    "role.parent": "பெற்றோர்",
-
-    // Navigation
-    "nav.dashboard": "டாஷ்போர்ட்",
-    "nav.schools": "பள்ளிகள்",
-    "nav.students": "மாணவர்கள்",
-    "nav.faculty": "ஆசிரியர்கள்",
-    "nav.subjects": "பாடங்கள்",
-    "nav.lessons": "பாடங்கள்",
-    "nav.assessments": "மதிப்பீடுகள்",
-    "nav.analytics": "பகுப்பாய்வு",
-    "nav.ai": "AI நுண்ணறிவு",
-    "nav.videos": "வீடியோக்கள்",
-    "nav.quizzes": "வினாடி வினா",
-    "nav.results": "முடிவுகள்",
-    "nav.attendance": "வருகை",
-    "nav.documentation": "ஆவணங்கள்",
-    "nav.content": "உள்ளடக்கம்",
-    "nav.performance": "செயல்திறன்",
-    "nav.recommendations": "பரிந்துரைகள்",
-
-    // Standards & Medium
-    "standard.10": "10ஆம் வகுப்பு",
-    "standard.11": "11ஆம் வகுப்பு",
-    "standard.12": "12ஆம் வகுப்பு",
-    "medium.english": "ஆங்கில வழி",
-    "medium.tamil": "தமிழ் வழி",
-
-    // Subjects
-    "subject.mathematics": "கணிதம்",
-    "subject.science": "அறிவியல்",
-    "subject.physics": "இயற்பியல்",
-    "subject.chemistry": "வேதியியல்",
-    "subject.biology": "உயிரியல்",
-    "subject.computerScience": "கணினி அறிவியல்",
-
-    // Dashboard
-    "dashboard.welcome": "மீண்டும் வரவேற்கிறோம்",
-    "dashboard.totalSchools": "மொத்த பள்ளிகள்",
-    "dashboard.totalStudents": "மொத்த மாணவர்கள்",
-    "dashboard.totalFaculty": "மொத்த ஆசிரியர்கள்",
-    "dashboard.totalSubjects": "மொத்த பாடங்கள்",
-    "dashboard.recentActivity": "சமீபத்திய செயல்பாடு",
-    "dashboard.performanceOverview": "செயல்திறன் கண்ணோட்டம்",
-    "dashboard.districtComparison": "மாவட்ட ஒப்பீடு",
-    "dashboard.topPerformers": "சிறந்த மாணவர்கள்",
-    "dashboard.atRiskStudents": "ஆபத்தில் உள்ள மாணவர்கள்",
-    "dashboard.upcomingAssessments": "வரவிருக்கும் மதிப்பீடுகள்",
-
-    // Faculty
-    "faculty.uploadLesson": "பாடம் பதிவேற்றம்",
-    "faculty.uploadVideo": "வீடியோ பதிவேற்றம்",
-    "faculty.uploadPDF": "PDF பதிவேற்றம்",
-    "faculty.createQuiz": "வினாடி வினா உருவாக்கு",
-    "faculty.classAnalytics": "வகுப்பு பகுப்பாய்வு",
-    "faculty.riskStudents": "ஆபத்தில் உள்ள மாணவர்கள்",
-
-    // Student
-    "student.enrolledSubjects": "சேர்ந்த பாடங்கள்",
-    "student.watchVideos": "வீடியோ பார்",
-    "student.attemptQuiz": "வினாடி வினா முயற்சி",
-    "student.myPerformance": "என் செயல்திறன்",
-    "student.predictedScore": "கணிக்கப்பட்ட மதிப்பெண்",
-    "student.recommendedLessons": "பரிந்துரைக்கப்பட்ட பாடங்கள்",
-
-    // AI
-    "ai.predictedScore": "கணிக்கப்பட்ட இறுதி மதிப்பெண்",
-    "ai.riskLevel": "ஆபத்து நிலை",
-    "ai.recommendations": "தனிப்பட்ட பரிந்துரைகள்",
-    "ai.confidence": "நம்பிக்கை",
-
-    // Assessment
-    "assessment.create": "மதிப்பீடு உருவாக்கு",
-    "assessment.title": "மதிப்பீடு தலைப்பு",
-    "assessment.type": "வகை",
-    "assessment.duration": "கால அளவு (நிமிடங்கள்)",
-    "assessment.totalMarks": "மொத்த மதிப்பெண்கள்",
-    "assessment.questions": "கேள்விகள்",
-    "assessment.addQuestion": "கேள்வி சேர்",
-    "assessment.start": "மதிப்பீடு தொடங்கு",
-    "assessment.submit": "மதிப்பீடு சமர்ப்பி",
-    "assessment.timeRemaining": "மீதமுள்ள நேரம்",
-    "assessment.score": "உங்கள் மதிப்பெண்",
-    "assessment.passed": "தேர்ச்சி",
-    "assessment.failed": "மேம்பாடு தேவை",
-
-    // Analytics
-    "analytics.subjectPerformance": "பாட செயல்திறன்",
-    "analytics.progressOverTime": "நேரப்போக்கில் முன்னேற்றம்",
-    "analytics.weakAreas": "பலவீனமான பகுதிகள்",
-    "analytics.classAverage": "வகுப்பு சராசரி",
-    "analytics.unitDifficulty": "அலகு சிரமம்",
-    "analytics.schoolComparison": "பள்ளி ஒப்பீடு",
-    "analytics.districtPerformance": "மாவட்ட செயல்திறன்",
-
-    // Language
-    "language.english": "English",
-    "language.tamil": "தமிழ்",
-    "language.toggle": "மொழி மாற்று",
   },
 }
 
@@ -421,7 +267,6 @@ export const useLanguageStore = create<LanguageState>((set, get) => ({
   locale: "en",
   setLocale: (locale) => set({ locale }),
   t: (key: string) => {
-    const { locale } = get()
-    return translations[locale]?.[key] || key
+    return translations.en[key] || key
   },
 }))

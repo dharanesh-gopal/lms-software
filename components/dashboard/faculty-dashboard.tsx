@@ -22,7 +22,7 @@ import {
 } from "recharts"
 
 export function FacultyDashboard() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
 
   const recentUploads = [
     { id: 1, title: "Real Numbers - Introduction", type: "video", date: "2024-10-15" },
@@ -152,7 +152,7 @@ export function FacultyDashboard() {
               {mockAssessments.map((a) => (
                 <div key={a.id} className="flex items-center justify-between rounded-lg border p-3">
                   <div>
-                    <p className="text-sm font-medium">{locale === "ta" ? a.title_ta : a.title_en}</p>
+                    <p className="text-sm font-medium">{a.title_en}</p>
                     <p className="text-xs text-muted-foreground">{a.duration} min / {a.totalMarks} marks</p>
                   </div>
                   <Badge variant="outline" className="text-xs capitalize">{a.type}</Badge>

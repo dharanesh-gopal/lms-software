@@ -120,30 +120,28 @@ router.post('/track', authMiddleware, async (req, res) => {
   try {
     const { course, action, duration } = req.body;
     
-    let analytics = await Analytics.findOne({ user: req.user.id, course });
-    if (!analytics) {
-      analytics = new Analytics({ user: req.user.id, course });
-    }
-
     let xpGained = 0;
-    if (action === 'video-watched') {
-      analytics.videosWatched++;
-      xpGained = 10;
-    }
-    if (action === 'lesson-completed') {
-      analytics.lessonsCompleted++;
-      xpGained = 50;
-    }
-    if (action === 'quiz-taken') {
-      analytics.quizzesTaken++;
-      xpGained = 20;
-    }
-    if (duration) analytics.timeSpent += duration;
+    if (action === 'video-watched') xpGained = 10;
+    if (action === 'lesson-completed') xpGained = 50;
+    if (action === 'quiz-taken') xpGained = 20;
 
-    analytics.lastAccessed = new Date();
-    await analytics.save();
+    // Only save to Analytics table if course is a valid ObjectId
+    if (course && course.length === 24) {
+      let analytics = await Analytics.findOne({ user: req.user.id, course });
+      if (!analytics) {
+        analytics = new Analytics({ user: req.user.id, course });
+      }
 
-    // Award Gamification XP
+      if (action === 'video-watched') analytics.videosWatched++;
+      if (action === 'lesson-completed') analytics.lessonsCompleted++;
+      if (action === 'quiz-taken') analytics.quizzesTaken++;
+      if (duration) analytics.timeSpent += duration;
+
+      analytics.lastAccessed = new Date();
+      await analytics.save();
+    }
+
+    // Award Gamification XP for both Real and Mock courses
     if (xpGained > 0) {
       const user = await User.findById(req.user.id);
       if (user) {
@@ -165,7 +163,7 @@ router.post('/track', authMiddleware, async (req, res) => {
       }
     }
 
-    res.json(analytics);
+    res.json(analytics || { success: true, xpGained, msg: "Mock XP Awarded" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

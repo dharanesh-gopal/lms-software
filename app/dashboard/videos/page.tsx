@@ -11,10 +11,30 @@ import { Video, Play, Pause, Volume2, Maximize, ChevronLeft, Clock, BookOpen } f
 import { mockLessons, mockUnits, mockSubjects } from "@/lib/mock-data"
 
 export default function VideosPage() {
-  const { t, locale } = useLanguageStore()
+  const { t } = useLanguageStore()
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(35)
+  const [hasAwardedXP, setHasAwardedXP] = useState(false)
+
+  const handleMarkComplete = async () => {
+    setProgress(100);
+    if (hasAwardedXP) return;
+    
+    setHasAwardedXP(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (token && selectedLesson) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analytics/track`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ action: 'video-watched', course: selectedLesson })
+        });
+      }
+    } catch (err) {
+      console.error('Failed to grant XP:', err);
+    }
+  }
 
   const lesson = mockLessons.find((l) => l.id === selectedLesson)
 
@@ -32,7 +52,7 @@ export default function VideosPage() {
             <div className="text-center">
               <Video className="h-16 w-16 text-[hsl(var(--sidebar-foreground))]/40 mx-auto mb-3" />
               <p className="text-[hsl(var(--sidebar-foreground))]/60 text-sm">
-                Video Player - {locale === "ta" ? lesson.title_ta : lesson.title_en}
+                Video Player - {lesson.title_en}
               </p>
               <p className="text-[hsl(var(--sidebar-foreground))]/40 text-xs mt-1">
                 Video content would stream here from the backend
@@ -70,9 +90,9 @@ export default function VideosPage() {
           <div className="lg:col-span-2">
             <Card className="border-0 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-lg">{locale === "ta" ? lesson.title_ta : lesson.title_en}</CardTitle>
+                <CardTitle className="text-lg">{lesson.title_en}</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  {locale === "ta" ? lesson.description_ta || "" : lesson.description_en || ""}
+                  {lesson.description_en || ""}
                 </p>
               </CardHeader>
               <CardContent>
@@ -83,7 +103,16 @@ export default function VideosPage() {
                 <div className="mt-4">
                   <p className="text-xs text-muted-foreground mb-1">Watch Progress</p>
                   <Progress value={progress} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">{progress}% complete</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-xs text-muted-foreground">{progress}% complete</p>
+                    {progress < 100 ? (
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleMarkComplete}>
+                        Mark as Complete to Earn XP
+                      </Button>
+                    ) : (
+                      <span className="text-xs font-bold text-orange-500 flex items-center gap-1">+10 XP Awarded!</span>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -98,13 +127,13 @@ export default function VideosPage() {
                   {mockLessons.filter((l) => l.id !== selectedLesson).slice(0, 4).map((l) => (
                     <button
                       key={l.id}
-                      onClick={() => { setSelectedLesson(l.id); setProgress(0) }}
+                      onClick={() => { setSelectedLesson(l.id); setProgress(0); setHasAwardedXP(false); }}
                       className="flex items-center gap-2 rounded-lg p-2 text-left hover:bg-muted/50 transition-colors"
                     >
                       <div className="flex h-6 w-6 items-center justify-center rounded bg-[hsl(var(--primary))]/10 text-xs font-bold text-[hsl(var(--primary))]">
                         {l.lessonNumber}
                       </div>
-                      <span className="text-xs font-medium truncate">{locale === "ta" ? l.title_ta : l.title_en}</span>
+                      <span className="text-xs font-medium truncate">{l.title_en}</span>
                     </button>
                   ))}
                 </div>
@@ -130,7 +159,7 @@ export default function VideosPage() {
             <Card
               key={lesson.id}
               className="border-0 shadow-sm cursor-pointer transition-all hover:shadow-md group"
-              onClick={() => setSelectedLesson(lesson.id)}
+              onClick={() => { setSelectedLesson(lesson.id); setProgress(0); setHasAwardedXP(false); }}
             >
               <div className="relative aspect-video bg-muted rounded-t-xl flex items-center justify-center">
                 <div className="absolute inset-0 bg-[hsl(var(--sidebar-background))]/80 rounded-t-xl flex items-center justify-center">
@@ -146,13 +175,16 @@ export default function VideosPage() {
               </div>
               <CardContent className="p-3">
                 <h3 className="text-sm font-semibold line-clamp-1">
-                  {locale === "ta" ? lesson.title_ta : lesson.title_en}
+                  {lesson.title_en}
                 </h3>
                 {unit && (
                   <p className="text-xs text-muted-foreground mt-1">
-                    {locale === "ta" ? unit.name_ta : unit.name_en}
+                    {unit.name_en}
                   </p>
                 )}
+                <div className="mt-3 flex items-center">
+                  <span className="text-xs font-bold text-orange-500 flex items-center gap-1">+10 XP</span>
+                </div>
               </CardContent>
             </Card>
           )
